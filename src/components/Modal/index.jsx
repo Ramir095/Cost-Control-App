@@ -1,13 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Mensaje from "../Mensaje";
 import buttonCierre from "../../img/cerrar.svg";
 
-const Modal = ({ setModal, animarModal, setAnimarModal, handleSave }) => {
+const Modal = ({
+  setModal,
+  animarModal,
+  setAnimarModal,
+  handleSave,
+  gastoEditar,
+  setGastoEditar
+}) => {
   const [data, setData] = useState({
     nombre: "",
     cantidad: "",
     categorias: "",
-    mensaje: ""
+    mensaje: "",
+    id:"",
+    fecha: ""
   });
 
   const handleData = (e) => {
@@ -23,33 +32,48 @@ const Modal = ({ setModal, animarModal, setAnimarModal, handleSave }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if([data.nombre, data.cantidad, data.categorias].includes('')) {
+    if ([data.nombre, data.cantidad, data.categorias].includes("")) {
       setData({
         ...data,
-        mensaje: "Todos los espacios deben de ser completados"
-      })
+        mensaje: "Todos los espacios deben de ser completados",
+      });
       setTimeout(() => {
         setData({
           ...data,
-          mensaje: ""
-        })
-      }, 2000)
-      return
+          mensaje: "",
+        });
+      }, 2000);
+      return;
     }
-      handleSave({
-        nombre: data.nombre,
-        cantidad: data.cantidad,
-        categorias: data.categorias
-      })
-
+    handleSave({
+      nombre: data.nombre,
+      cantidad: data.cantidad,
+      categorias: data.categorias,
+      id: data.id,
+      fecha: data.fecha
+    });
   };
 
   const handleCierre = () => {
     setAnimarModal(false);
+    setGastoEditar({})
     setTimeout(() => {
       setModal(false);
     }, 500);
   };
+
+  useEffect(() => {
+    if (Object.keys(gastoEditar).length > 0) {
+      setData({
+        ...data,
+        nombre: gastoEditar.nombre,
+        cantidad: gastoEditar.cantidad,
+        categorias: gastoEditar.categorias,
+        id: gastoEditar.id,
+        fecha: gastoEditar.fecha
+      })
+    }
+  }, []);
 
   return (
     <div className="modal">
@@ -57,12 +81,13 @@ const Modal = ({ setModal, animarModal, setAnimarModal, handleSave }) => {
         <img src={buttonCierre} alt="boton de cierre" onClick={handleCierre} />
       </div>
 
-      <form onSubmit={handleSubmit} className={`formulario ${animarModal ? "animar" : "cerrar"}`}>
-        <legend>Nuevo gasto</legend>
+      <form
+        onSubmit={handleSubmit}
+        className={`formulario ${animarModal ? "animar" : "cerrar"}`}
+      >
+        <legend>{ gastoEditar.nombre ? "Editar gasto" : "Nuevo gasto"}</legend>
 
-        {
-          data.mensaje && <Mensaje tipo="error">{data.mensaje}</Mensaje>
-        }
+        {data.mensaje && <Mensaje tipo="error">{data.mensaje}</Mensaje>}
 
         <div className="campo">
           <label htmlFor="nombre">Nombre del gasto</label>
@@ -87,8 +112,9 @@ const Modal = ({ setModal, animarModal, setAnimarModal, handleSave }) => {
         </div>
 
         <div className="campo">
-          <label htmlFor="categoria">Categoria</label>
-          <select id="categorias" onChange={handleData}>
+          <label htmlFor="categorias">Categoria</label>
+
+          <select id="categorias" value={data.categorias} onChange={handleData}>
             <option value="">Seleccione</option>
             <option value="ahorro">Ahorro</option>
             <option value="comida">Comida</option>
@@ -99,7 +125,7 @@ const Modal = ({ setModal, animarModal, setAnimarModal, handleSave }) => {
             <option value="suscripciones">Suscripciones</option>
           </select>
         </div>
-        <input type="submit" value="Añadir gasto" />
+        <input type="submit" value={ gastoEditar.nombre ? "Guardar cambios" : "Añadir gasto"} />
       </form>
     </div>
   );
