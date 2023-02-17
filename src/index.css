@@ -205,9 +205,8 @@ header h1 {
         text-align: left;
     }
 }
-.contenido-presupuesto p.negativo,
-.contenido-presupuesto p.negativo span {
-    color: red;
+.contenido-presupuesto p.negativo {
+    color: #DC2626;
 }
 .contenido-presupuesto span {
     font-weight: 900;
