@@ -56,7 +56,7 @@ const Gastos = ({ gasto, setGastoEditar, handleDelete }) => {
       >
         <div className="gasto sombra">
           <div className="contenido-gasto">
-            <img src={diccionarioIconos[categorias]} alt="Icono del gasto" />
+            <img src={categorias === "gastos varios" ? diccionarioIconos.gastos : diccionarioIconos[categorias]} alt="Icono del gasto" />
             <div className="descripcion-gasto">
               <p className="categoria">{categorias}</p>
               <p className="nombre-gasto">{nombre}</p>
